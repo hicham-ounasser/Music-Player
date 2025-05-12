@@ -1,8 +1,37 @@
+const image = document.querySelector("img");
+const title = document.getElementById("title");
+const artist = document.getElementById("artist");
 const music = document.querySelector("audio");
+const progressContainer = document.getElementById("progress-container");
+const progress = document.getElementById("progress");
 const prevBtn = document.getElementById("prev");
 const playBtn = document.getElementById("play");
 const nextBtn = document.getElementById("next");
 let isPlaying = false;
+
+// Music
+const songs = [
+  {
+    name: "jacinto-1",
+    displayName: "Electric chill",
+    artist: "Somebody",
+  },
+  {
+    name: "jacinto-2",
+    displayName: "Seven Nation",
+    artist: "Somebody",
+  },
+  {
+    name: "jacinto-3",
+    displayName: "Hold on",
+    artist: "Somebody",
+  },
+  {
+    name: "metric-1",
+    displayName: "What!!!",
+    artist: "meta",
+  },
+];
 
 function playSong() {
   isPlaying = true;
@@ -18,3 +47,44 @@ function pauseSong() {
 playBtn.addEventListener("click", () => {
   isPlaying ? pauseSong() : playSong();
 });
+
+function loadSong(song) {
+  title.textContent = song.displayName;
+  artist.textContent = song.artist;
+  music.src = `music/${song.name}.mp3`;
+  image.src = `img/${song.name}.jpg`;
+}
+
+// current song
+let songIndex = 0;
+
+// next song
+function nextSong() {
+  songIndex++;
+  loadSong(songs[songIndex]);
+  playSong();
+}
+
+// prev song
+function prevSong() {
+  songIndex--;
+  loadSong(songs[songIndex]);
+  playSong();
+}
+// on load first song
+loadSong(songs[songIndex]);
+
+// update the bar
+function updateProgressBar(e) {
+  if (isPlaying) {
+    const { duration, currentTime } = e.srcElement;
+
+    const progressPercent = (currentTime / duration) * 100;
+    progress.style.width = `${progressPercent}%`;
+  }
+}
+
+// Event listeners
+prevBtn.addEventListener("click", prevSong);
+nextBtn.addEventListener("click", nextSong);
+music.addEventListener("timeupdate", updateProgressBar);
